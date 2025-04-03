@@ -21,7 +21,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getReservationByUserId(final int userId) {
-        return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId).toList();
+        return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
     }
 
     public void makeReservation(final Customer customer, final int idWorkspace, final String start, final String end) {
@@ -31,8 +31,9 @@ public class ReservationService {
             dataStorage.addReservation(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
             System.out.println(Message.SUCCESSFUL);
+        } else {
+            System.out.println(Message.NOT_SUCCESSFUL);
         }
-        System.out.println(Message.NOT_SUCCESSFUL);
     }
 
     public void cancelReservation(final int idReservation) {
@@ -41,8 +42,9 @@ public class ReservationService {
             reservation.cancel(idReservation);
             reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
             System.out.println(Message.SUCCESSFUL);
+        } else {
+            System.out.println(Message.NOT_SUCCESSFUL);
         }
-        System.out.println(Message.NOT_SUCCESSFUL);
     }
 
     private static class ReservationServiceHolder {

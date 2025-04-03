@@ -43,4 +43,14 @@ public class Workspace {
     public boolean isAvailable(){
         return this.status == ReservationStatus.AVAILABLE;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Workspace #%d [Type: %s, Price: %d, Status: %s, Available: %s]",
+                id,
+                type,
+                price,
+                status,
+                isAvailable() ? "Yes" : "No");
+    }
 }

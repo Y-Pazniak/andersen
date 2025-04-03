@@ -1,7 +1,9 @@
 package org.example.model;
 
+import java.util.List;
+
 public class Customer extends User {
-    public Customer(String name) {
-        super(name);
+    public Customer() {
+        super();
     }
 }
