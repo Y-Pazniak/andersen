@@ -22,8 +22,9 @@ public class WorkspaceService {
         if (workspace != null) {
             dataStorage.removeWorkspace(workspace.getId());
             System.out.println(Message.SUCCESSFUL);
+        } else {
+            System.out.println(Message.NOT_SUCCESSFUL);
         }
-        System.out.println(Message.NOT_SUCCESSFUL);
     }
 
     public void updateWorkspace(final int id, final int newPrice, final ReservationStatus newStatus) {
@@ -38,6 +39,10 @@ public class WorkspaceService {
 
     public List<Workspace> getAvailableWorkspaces() {
         return dataStorage.getAllWorkspaces().values().stream().filter(n -> n.isAvailable()).toList();
+    }
+
+    public List<Workspace> getAllWorkspaces() {
+        return dataStorage.getAllWorkspaces().values().stream().toList();
     }
 
     public static WorkspaceService getInstance() {
