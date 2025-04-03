@@ -1,4 +1,4 @@
-About
+<h1>About</h1>
 
 Coworking Booking System is a delightfully chaotic console application for booking coworking spaces. 
 It is implemented using the MVC pattern, which makes the project scalable (in theory) and gives questionably infinite opportunities for growth.
