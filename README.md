@@ -14,10 +14,10 @@
 <h2>Future possibilities</h2>
 <p>This project is already cool, but there's so much more fun stuff to add.</p>
 <ul>
-<p>A real database (JDBC or something even more fancy) – because storing data in memory is reckless optimistic.</p>
-<p>Authorization and authentication – no more anonymous trolls booking all the rooms (until they hack it).</p>
-<p>Logging and history tracking – when you need to trace who broke it again.</p>
-<p>More incredible features – because who is satisfied with just "functional"?</p>
+<li>A real database (JDBC or something even more fancy) – because storing data in memory is reckless optimistic.</li>
+<li>Authorization and authentication – no more anonymous trolls booking all the rooms (until they hack it).</li>
+<li>Logging and history tracking – when you need to trace who broke it again.</li>
+<li>More incredible features – because who is satisfied with just "functional"?</li>
 </ul>
 <p>The system already works almost as expected, which is mildly terrifying.</p>
 <p>And rememder: there are no bugs - only undocumented features or "preview mode".</p>
