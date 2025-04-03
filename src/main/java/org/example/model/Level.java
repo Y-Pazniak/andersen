@@ -1,0 +1,14 @@
+package org.example.model;
+
+public enum Level {
+    MAIN_MENU,
+    ADMIN_MENU,
+    CUSTOMER_MENU,
+    ADD_WORKSPACE,
+    REMOVE_WORKSPACE,
+    VIEW_ALL,
+    BROWSE_SPACES,
+    MAKE_RESERVATION,
+    CANCEL_RESERVATION,
+    VIEW_RESERVATIONS;
+}
