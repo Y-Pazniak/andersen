@@ -4,10 +4,15 @@ import org.example.model.Customer;
 import org.example.model.Reservation;
 import org.example.model.Workspace;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataStorage {
+public class DataStorage implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1l;
+
     private Map<Integer, Customer> customers;
     private Map<Integer, Reservation> reservations;
     private Map<Integer, Workspace> workspaces;

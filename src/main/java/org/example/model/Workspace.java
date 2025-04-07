@@ -1,6 +1,11 @@
 package org.example.model;
 
-public class Workspace {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Workspace  implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1l;
     private final int id;
     private static int idCounter = 0;
     private final Type type;

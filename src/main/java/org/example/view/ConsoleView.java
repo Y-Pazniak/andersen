@@ -2,6 +2,8 @@ package org.example.view;
 
 import org.example.controller.CustomerController;
 import org.example.model.*;
+import org.example.repository.DataStorage;
+import org.example.repository.DataStorageSerialization;
 import org.example.service.WorkspaceService;
 
 import java.io.BufferedReader;
@@ -189,6 +191,7 @@ public class ConsoleView {
 
     private int readCommand(final BufferedReader bufferedReader) {
         try {
+            DataStorageSerialization.getInstance().save(DataStorage.getInstance());
             return Integer.parseInt(bufferedReader.readLine().trim());
         } catch (IOException | NumberFormatException e) {
             System.out.println(Message.WRONG_INPUT.getMessage());
