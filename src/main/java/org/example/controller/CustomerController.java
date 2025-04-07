@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.exception.EmptyListException;
 import org.example.model.*;
 import org.example.repository.DataStorage;
 import org.example.service.ReservationService;
@@ -23,7 +24,15 @@ public class CustomerController {
     }
 
     public List<Workspace> getAvailableWorkspaces() {
+        List<Workspace> workspaces = workspaceService.getAvailableWorkspaces();
+        if (workspaces.isEmpty()) {
+            throw new EmptyListException("There are no available workspaces");
+        }
         return workspaceService.getAvailableWorkspaces();
+    }
+
+    public void makeReservation(final Customer customer, final int idWorkspace, final String start, final String end){
+        reservationService.makeReservation(customer, idWorkspace, start, end);
     }
 
     public void addCustomer() {
@@ -34,7 +43,11 @@ public class CustomerController {
         return dataStorage.getCustomer(id);
     }
 
-    public List<Reservation> getReservationByUserId(final int userId) {
+    public List<Reservation> getReservationsByUserId(final int userId) {
+        List<Reservation> reservations = reservationService.getReservationByUserId(userId);
+        if (reservations.isEmpty()) {
+            throw new EmptyListException("No reservations");
+        }
         return reservationService.getReservationByUserId(userId);
     }
 

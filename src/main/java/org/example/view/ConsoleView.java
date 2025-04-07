@@ -1,9 +1,7 @@
 package org.example.view;
 
-import org.example.controller.AdminController;
 import org.example.controller.CustomerController;
 import org.example.model.*;
-import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
 
 import java.io.BufferedReader;
@@ -13,11 +11,13 @@ import java.util.List;
 
 public class ConsoleView {
     private Level level;
-    private Customer currentCustomer;
+    private Customer customer;
+    private final CommandProcessor commandProcessor;
 
     private ConsoleView() {
         level = Level.MAIN_MENU;
-        currentCustomer = new Customer();
+        customer = new Customer();
+        commandProcessor = CommandProcessor.getInstance();
     }
 
     public Level getLevel() {
@@ -44,7 +44,7 @@ public class ConsoleView {
 
                 CommandProcessor.getInstance().processCommand(commandId, this);
             }
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println(Message.WRONG_INPUT.getMessage());
             e.printStackTrace();
         }
@@ -58,7 +58,7 @@ public class ConsoleView {
             case ADMIN_MENU -> requestAdminCommand();
             case ADD_WORKSPACE -> requestWorkspaceAdd(bufferedReader);
             case REMOVE_WORKSPACE -> requestWorkspaceRemove(bufferedReader);
-            case VIEW_ALL -> requestAllReservations(bufferedReader);
+            case VIEW_ALL -> requestViewAllReservations(bufferedReader);
 
             case CUSTOMER_MENU -> requestCustomerCommand();
             case BROWSE_SPACES -> requestAvailableSpaces(bufferedReader);
@@ -89,13 +89,11 @@ public class ConsoleView {
         System.out.println(Message.REMOVE.getMessage());
         System.out.println(Command.EXIT.getCommand());
         System.out.println(Command.ROLLBACK.getCommand());
+        String readInput = bufferedReader.readLine().trim();
 
-        try {
-            AdminController.getInstance().removeWorkspace(Integer.parseInt(bufferedReader.readLine()));
-        } catch (IOException | NumberFormatException e) {
-            throw new RuntimeException(e);
+        if (isDigit(readInput)) {
+            commandProcessor.processRemoveWorkspace(Integer.parseInt(readInput));
         }
-
         WorkspaceService.getInstance().getAllWorkspaces().forEach(System.out::println);
 
         level = Level.ADMIN_MENU;
@@ -109,22 +107,26 @@ public class ConsoleView {
         System.out.println(Command.WORKSPACE_PRICE_REQUEST.getCommand());
         int price = Integer.parseInt(bufferedReader.readLine());
 
-        AdminController.getInstance().addWorkspace(type, price);
+        CommandProcessor.getInstance().processAddWorkspace(type, price);
 
         WorkspaceService.getInstance().getAllWorkspaces().forEach(System.out::println);
         level = Level.ADMIN_MENU;
         showMenu(bufferedReader);
     }
 
-    private void requestAllReservations(final BufferedReader bufferedReader) throws IOException {
-        List<Reservation> reservations = AdminController.getInstance().getAllReservations();
-        if (reservations.isEmpty()) {
-            System.out.println(Message.EMPTY.getMessage());
-        } else {
-            reservations.forEach(System.out::println);
-        }
+    private void requestViewAllReservations(final BufferedReader bufferedReader) throws IOException {
+        List<Reservation> reservations = commandProcessor.processViewReservations();
+        reservations.forEach(System.out::println);
 
         level = Level.ADMIN_MENU;
+        showMenu(bufferedReader);
+    }
+
+    private void requestAvailableSpaces(final BufferedReader bufferedReader) throws IOException {
+        List<Workspace> workspaces = commandProcessor.processBrowseAvailableSpaces();
+        workspaces.forEach(System.out::println);
+
+        level = Level.CUSTOMER_MENU;
         showMenu(bufferedReader);
     }
 
@@ -138,19 +140,15 @@ public class ConsoleView {
         System.out.println(Message.TILL.getMessage());
         String till = bufferedReader.readLine();
 
-        ReservationService.getInstance().makeReservation(currentCustomer, idSpace, from, till);
+        commandProcessor.processReservation(customer, idSpace, from, till);
 
         level = Level.CUSTOMER_MENU;
         showMenu(bufferedReader);
     }
 
     private void requestMyReservations(final BufferedReader bufferedReader) throws IOException {
-        List<Reservation> reservations = CustomerController.getInstance().getReservationByUserId(currentCustomer.getId());
-        if (reservations.isEmpty()) {
-            System.out.println(Message.EMPTY);
-        } else {
-            reservations.forEach(System.out::println);
-        }
+        List<Reservation> reservations = commandProcessor.viewMyReservations(customer.getId());
+        reservations.forEach(System.out::println);
 
         level = Level.CUSTOMER_MENU;
         showMenu(bufferedReader);
@@ -158,7 +156,10 @@ public class ConsoleView {
 
     private void cancelMyReservation(final BufferedReader bufferedReader) throws IOException {
         System.out.println(Message.ID_WORKSPACE_REQUEST.getMessage());
-        CustomerController.getInstance().cancelReservation(Integer.parseInt(bufferedReader.readLine()));
+        String readInpupt = bufferedReader.readLine().trim();
+        if (isDigit(readInpupt)) {
+            commandProcessor.cancelReservation(Integer.parseInt(readInpupt));
+        }
 
         level = Level.CUSTOMER_MENU;
         showMenu(bufferedReader);
@@ -175,22 +176,21 @@ public class ConsoleView {
         System.out.println(Command.ROLLBACK.getCommand());
     }
 
-    private void requestAvailableSpaces(final BufferedReader bufferedReader) throws IOException {
-        List<Workspace> workspaces = CustomerController.getInstance().getAvailableWorkspaces();
-        if (workspaces.isEmpty()) {
-            System.out.println(Message.EMPTY.getMessage());
-        } else {
-            workspaces.forEach(System.out::println);
+    private boolean isDigit(final String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Use digits");
+            return false;
         }
-
-        level = Level.CUSTOMER_MENU;
-        showMenu(bufferedReader);
     }
 
     private int readCommand(final BufferedReader bufferedReader) {
         try {
-            return Integer.parseInt(bufferedReader.readLine());
-        } catch (IOException e) {
+            return Integer.parseInt(bufferedReader.readLine().trim());
+        } catch (IOException | NumberFormatException e) {
             System.out.println(Message.WRONG_INPUT.getMessage());
             return -12345;
         }

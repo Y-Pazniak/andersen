@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.example.exception.InvalidWorkspaceReservation;
+import org.example.exception.WorkspaceUnavailableException;
 import org.example.model.*;
 import org.example.repository.DataStorage;
 
@@ -30,9 +32,9 @@ public class ReservationService {
             Reservation reservation = new Reservation(customer, workspace, start, end);
             dataStorage.addReservation(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
-            System.out.println(Message.SUCCESSFUL);
+            System.out.println(Message.SUCCESSFUL.getMessage());
         } else {
-            System.out.println(Message.NOT_SUCCESSFUL);
+            throw new WorkspaceUnavailableException("Workspace is not available");
         }
     }
 
@@ -41,9 +43,9 @@ public class ReservationService {
         if (reservation != null) {
             reservation.cancel(idReservation);
             reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
-            System.out.println(Message.SUCCESSFUL);
+            System.out.println(Message.SUCCESSFUL.getMessage());
         } else {
-            System.out.println(Message.NOT_SUCCESSFUL);
+            throw new InvalidWorkspaceReservation("You have no reservation for this id: " + idReservation);
         }
     }
 
