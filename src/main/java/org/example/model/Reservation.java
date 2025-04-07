@@ -1,6 +1,11 @@
 package org.example.model;
 
-public class Reservation {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Reservation  implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1l;
     private static int idCounter = 0;
     private final Customer customer;
     private final int id;
