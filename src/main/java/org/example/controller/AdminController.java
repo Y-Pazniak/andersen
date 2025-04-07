@@ -8,6 +8,8 @@ import org.example.model.Message;
 import org.example.model.Reservation;
 import org.example.model.Type;
 import org.example.model.Workspace;
+import org.example.repository.DataStorage;
+import org.example.repository.DataStorageSerialization;
 import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
 
@@ -16,10 +18,12 @@ import java.util.List;
 public class AdminController {
     private final WorkspaceService workspaceService;
     private final ReservationService reservationService;
+    private final DataStorageSerialization dataStorageSerialization;
 
     private AdminController() {
         workspaceService = WorkspaceService.getInstance();
         reservationService = ReservationService.getInstance();
+        dataStorageSerialization = DataStorageSerialization.getInstance();
     }
 
     public static AdminController getInstance() {
@@ -37,6 +41,7 @@ public class AdminController {
                 System.out.println(Message.SUCCESSFUL);
             }
         }
+        dataStorageSerialization.save(DataStorage.getInstance());
     }
 
     public Workspace getWorkspaceById(final int id) {
@@ -62,6 +67,7 @@ public class AdminController {
                         .filter(n -> n.getId() == id)
                         .findFirst()
                         .orElse(null));
+        dataStorageSerialization.save(DataStorage.getInstance());
     }
 
     public List<Reservation> getAllReservations() {

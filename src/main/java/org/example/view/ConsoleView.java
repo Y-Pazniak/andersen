@@ -35,12 +35,14 @@ public class ConsoleView {
     }
 
     public void start() {
+        DataStorageSerialization.getInstance().load();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (true) {
                 showMenu(reader);
 
                 int commandId = readCommand(reader);
                 if (commandId == 0) {
+                    DataStorageSerialization.getInstance().save(DataStorage.getInstance());
                     break;
                 }
 
@@ -191,7 +193,6 @@ public class ConsoleView {
 
     private int readCommand(final BufferedReader bufferedReader) {
         try {
-            DataStorageSerialization.getInstance().save(DataStorage.getInstance());
             return Integer.parseInt(bufferedReader.readLine().trim());
         } catch (IOException | NumberFormatException e) {
             System.out.println(Message.WRONG_INPUT.getMessage());
