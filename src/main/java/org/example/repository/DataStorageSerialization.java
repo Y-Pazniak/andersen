@@ -5,7 +5,7 @@ import java.io.*;
 public class DataStorageSerialization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1l;
-    private final String FILE_NAME = "dataStorage.ser";
+    private static final String FILE_NAME = "dataStorage.ser";
 
     private DataStorageSerialization() {
     }
@@ -23,7 +23,13 @@ public class DataStorageSerialization implements Serializable {
     }
 
     public void load() {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(new File(FILE_NAME)))) {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            System.out.println("New base has been created");
+            return;
+        }
+
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
             DataStorage loadedData = (DataStorage) objectInputStream.readObject();
             DataStorage currentData = DataStorage.getInstance();
 
