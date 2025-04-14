@@ -25,7 +25,7 @@ public class DataStorageSerialization implements Serializable {
     public void load() {
         File file = new File(FILE_NAME);
         if (!file.exists()) {
-            System.out.println("New base has been created");
+            System.out.println("The database hasn't been created yet");
             return;
         }
 
