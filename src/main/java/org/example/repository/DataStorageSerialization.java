@@ -1,5 +1,7 @@
 package org.example.repository;
 
+import org.example.exception.DatabaseDoesNotExist;
+
 import java.io.*;
 
 public class DataStorageSerialization implements Serializable {
@@ -24,8 +26,12 @@ public class DataStorageSerialization implements Serializable {
 
     public void load() {
         File file = new File(FILE_NAME);
-        if (!file.exists()) {
-            System.out.println("The database hasn't been created yet");
+        try {
+            if (!file.exists()) {
+                throw new DatabaseDoesNotExist(FILE_NAME + " does not exist for some reasons");
+            }
+        } catch (DatabaseDoesNotExist e) {
+            System.out.println(e.getMessage());
             return;
         }
 
