@@ -19,10 +19,12 @@ public class ReservationService {
     }
 
     public List<Reservation> getAllReservations() {
+        //here we use streams to convert values from a map to a list and to get reservations were made
         return dataStorage.getAllReservations().values().stream().toList();
     }
 
     public List<Reservation> getReservationByUserId(final int userId) {
+        //here we use streams to get reservations according to user's ID and use the lambda to check the status and ID
         return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
     }
 
