@@ -1,11 +1,13 @@
 package org.example.repository;
 
+import org.example.exception.DatabaseDoesNotExist;
+
 import java.io.*;
 
 public class DataStorageSerialization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1l;
-    private final String FILE_NAME = "dataStorage.ser";
+    private static final String FILE_NAME = "dataStorage.ser";
 
     private DataStorageSerialization() {
     }
@@ -23,7 +25,17 @@ public class DataStorageSerialization implements Serializable {
     }
 
     public void load() {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(new File(FILE_NAME)))) {
+        File file = new File(FILE_NAME);
+        try {
+            if (!file.exists()) {
+                throw new DatabaseDoesNotExist(FILE_NAME + " does not exist for some reasons");
+            }
+        } catch (DatabaseDoesNotExist e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
             DataStorage loadedData = (DataStorage) objectInputStream.readObject();
             DataStorage currentData = DataStorage.getInstance();
 
