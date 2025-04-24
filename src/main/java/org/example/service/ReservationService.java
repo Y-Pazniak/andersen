@@ -8,10 +8,10 @@ import org.example.repository.DataStorage;
 import java.util.List;
 
 public class ReservationService {
-    private final DataStorage dataStorage;
+    private DataStorage dataStorage;
 
     private ReservationService() {
-        dataStorage = DataStorage.getInstance();
+        this.dataStorage = DataStorage.getInstance();
     }
 
     public static ReservationService getInstance() {
@@ -47,6 +47,14 @@ public class ReservationService {
         } else {
             throw new InvalidWorkspaceReservation("You have no reservation for this id: " + idReservation);
         }
+    }
+
+    void setDataStorage(final DataStorage mockStorage) {
+        this.dataStorage = mockStorage;
+    }
+
+    void restoreDefaultStorage() {
+        this.dataStorage = DataStorage.getInstance();
     }
 
     private static class ReservationServiceHolder {
