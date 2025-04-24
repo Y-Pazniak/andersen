@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ConsoleView {
     private Level level;
-    private Customer customer;
+    private final Customer customer;
     private final CommandProcessor commandProcessor;
 
     private ConsoleView() {
