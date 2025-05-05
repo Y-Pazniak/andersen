@@ -6,24 +6,21 @@ import org.example.repository.DataStorage;
 import org.example.repository.DataStorageSerialization;
 import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class CustomerController {
     private final WorkspaceService workspaceService;
     private final ReservationService reservationService;
     private final DataStorage dataStorage;
     private final DataStorageSerialization dataStorageSerialization;
 
-    private CustomerController() {
-        workspaceService = WorkspaceService.getInstance();
-        reservationService = ReservationService.getInstance();
+    private CustomerController(WorkspaceService workspaceService, ReservationService reservationService) {
+        this.workspaceService = workspaceService;
+        this.reservationService = reservationService;
         dataStorage = DataStorage.getInstance();
         dataStorageSerialization = DataStorageSerialization.getInstance();
-    }
-
-    public static CustomerController getInstance() {
-        return CustomerControllerHolder.CUSTOMER_CONTROLLER;
     }
 
     public List<Workspace> getAvailableWorkspaces() {
@@ -34,7 +31,7 @@ public class CustomerController {
         return workspaceService.getAvailableWorkspaces();
     }
 
-    public void makeReservation(final Customer customer, final int idWorkspace, final String start, final String end){
+    public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end){
         reservationService.makeReservation(customer, idWorkspace, start, end);
         dataStorageSerialization.save(dataStorage);
     }
@@ -59,9 +56,5 @@ public class CustomerController {
     public void cancelReservation(final int idReservation) {
         reservationService.cancelReservation(idReservation);
         dataStorageSerialization.save(dataStorage);
-    }
-
-    private static class CustomerControllerHolder {
-        private static final CustomerController CUSTOMER_CONTROLLER = new CustomerController();
     }
 }

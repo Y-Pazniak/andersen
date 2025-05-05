@@ -4,18 +4,20 @@ import org.example.exception.InvalidWorkspaceReservation;
 import org.example.exception.WorkspaceUnavailableException;
 import org.example.model.*;
 import org.example.repository.DataStorage;
+import org.example.repository.WorkspaceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class ReservationService {
     private final DataStorage dataStorage;
+    private final WorkspaceRepository workspaceRepository;
 
-    private ReservationService() {
+    @Autowired
+    private ReservationService(WorkspaceRepository workspaceRepository) {
+        this.workspaceRepository = workspaceRepository;
         dataStorage = DataStorage.getInstance();
-    }
-
-    public static ReservationService getInstance() {
-        return ReservationServiceHolder.RESERVATION_SERVICE;
     }
 
     public List<Reservation> getAllReservations() {
@@ -26,9 +28,9 @@ public class ReservationService {
         return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
     }
 
-    public void makeReservation(final Customer customer, final int idWorkspace, final String start, final String end) {
-        Workspace workspace = dataStorage.getWorkspace(idWorkspace);
-        if (workspace != null && workspace.isAvailable()) {
+    public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {
+        Workspace workspace = workspaceRepository.getReferenceById(idWorkspace);
+        if (workspace.isAvailable()) {
             Reservation reservation = new Reservation(customer, workspace, start, end);
             dataStorage.addReservation(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
@@ -49,7 +51,4 @@ public class ReservationService {
         }
     }
 
-    private static class ReservationServiceHolder {
-        private static final ReservationService RESERVATION_SERVICE = new ReservationService();
-    }
 }
