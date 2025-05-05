@@ -44,7 +44,7 @@ public class DataStorage implements Serializable {
     }
 
     public void addWorkspace(final Workspace workspace) {
-        workspaces.put(workspace.getId(), workspace);
+        workspaces.put(Math.toIntExact(workspace.getId()), workspace);
     }
 
     public Map<Integer, Customer> getAllCustomers() {

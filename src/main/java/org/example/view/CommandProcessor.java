@@ -5,20 +5,17 @@ import org.example.controller.CustomerController;
 import org.example.exception.*;
 import org.example.model.*;
 import org.example.repository.DataStorageSerialization;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class CommandProcessor {
     private final AdminController adminController;
     private final CustomerController customerController;
 
-    private CommandProcessor() {
-        adminController = AdminController.getInstance();
-        customerController = CustomerController.getInstance();
-    }
-
-    public static CommandProcessor getInstance() {
-        return CommandProcessorHolder.COMMAND_PROCESSOR;
+    private CommandProcessor(AdminController adminController, CustomerController customerController) {
+        this.adminController = adminController;
+        this.customerController = customerController;
     }
 
     public void processCommand(final int commandId, final ConsoleView view) {
@@ -104,7 +101,7 @@ public class CommandProcessor {
         }
     }
 
-    public void processReservation(final Customer customer, final int idWorkspace, final String start, final String end) {
+    public void processReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {
         try {
             customerController.makeReservation(customer, idWorkspace, start, end);
         } catch (WorkspaceUnavailableException e) {
@@ -127,9 +124,5 @@ public class CommandProcessor {
         } catch (InvalidWorkspaceReservation e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static class CommandProcessorHolder {
-        private static final CommandProcessor COMMAND_PROCESSOR = new CommandProcessor();
     }
 }

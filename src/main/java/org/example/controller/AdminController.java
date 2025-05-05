@@ -12,22 +12,20 @@ import org.example.repository.DataStorage;
 import org.example.repository.DataStorageSerialization;
 import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class AdminController {
     private final WorkspaceService workspaceService;
     private final ReservationService reservationService;
     private final DataStorageSerialization dataStorageSerialization;
 
-    private AdminController() {
-        workspaceService = WorkspaceService.getInstance();
-        reservationService = ReservationService.getInstance();
+    private AdminController(WorkspaceService workspaceService, ReservationService reservationService) {
+        this.workspaceService = workspaceService;
+        this.reservationService = reservationService;
         dataStorageSerialization = DataStorageSerialization.getInstance();
-    }
-
-    public static AdminController getInstance() {
-        return AdminControllerHolder.ADMIN_CONTROLLER;
     }
 
     public void addWorkspace(final String type, final int price) {
@@ -86,9 +84,5 @@ public class AdminController {
         } catch (IllegalArgumentException e) {
             return false;
         }
-    }
-
-    private static class AdminControllerHolder {
-        private static final AdminController ADMIN_CONTROLLER = new AdminController();
     }
 }

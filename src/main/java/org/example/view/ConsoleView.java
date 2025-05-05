@@ -5,21 +5,26 @@ import org.example.model.*;
 import org.example.repository.DataStorage;
 import org.example.repository.DataStorageSerialization;
 import org.example.service.WorkspaceService;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-
+@Service
 public class ConsoleView {
     private Level level;
-    private Customer customer;
+    private final Customer customer;
     private final CommandProcessor commandProcessor;
+    private final WorkspaceService workspaceService;
+    private final CustomerController customerController;
 
-    private ConsoleView() {
+    private ConsoleView(CommandProcessor commandProcessor, WorkspaceService workspaceService, CustomerController customerController) {
         level = Level.MAIN_MENU;
         customer = new Customer();
-        commandProcessor = CommandProcessor.getInstance();
+        this.commandProcessor = commandProcessor;
+        this.workspaceService = workspaceService;
+        this.customerController = customerController;
     }
 
     public Level getLevel() {
@@ -28,10 +33,6 @@ public class ConsoleView {
 
     public void setLevel(final Level level) {
         this.level = level;
-    }
-
-    public static ConsoleView getInstance() {
-        return ConsoleViewHolder.CONSOLE_VIEW;
     }
 
     public void start() {
@@ -46,7 +47,7 @@ public class ConsoleView {
                     break;
                 }
 
-                CommandProcessor.getInstance().processCommand(commandId, this);
+                commandProcessor.processCommand(commandId, this);
             }
         } catch (IOException | NumberFormatException e) {
             System.out.println(Message.WRONG_INPUT.getMessage());
@@ -98,7 +99,7 @@ public class ConsoleView {
         if (isDigit(readInput)) {
             commandProcessor.processRemoveWorkspace(Integer.parseInt(readInput));
         }
-        WorkspaceService.getInstance().getAllWorkspaces().forEach(System.out::println);
+        workspaceService.getAllWorkspaces().forEach(System.out::println);
 
         level = Level.ADMIN_MENU;
         showMenu(bufferedReader);
@@ -111,9 +112,9 @@ public class ConsoleView {
         System.out.println(Command.WORKSPACE_PRICE_REQUEST.getCommand());
         int price = Integer.parseInt(bufferedReader.readLine());
 
-        CommandProcessor.getInstance().processAddWorkspace(type, price);
+        commandProcessor.processAddWorkspace(type, price);
 
-        WorkspaceService.getInstance().getAllWorkspaces().forEach(System.out::println);
+        workspaceService.getAllWorkspaces().forEach(System.out::println);
         level = Level.ADMIN_MENU;
         showMenu(bufferedReader);
     }
@@ -136,7 +137,7 @@ public class ConsoleView {
 
     private void requestReservationDetails(final BufferedReader bufferedReader) throws IOException {
         System.out.println(Message.ID_WORKSPACE_REQUEST.getMessage());
-        int idSpace = Integer.parseInt(bufferedReader.readLine());
+        Long idSpace = (long) Integer.parseInt(bufferedReader.readLine());
 
         System.out.println(Message.FROM.getMessage());
         String from = bufferedReader.readLine();
@@ -170,7 +171,7 @@ public class ConsoleView {
     }
 
     private void requestCustomerCommand() {
-        CustomerController.getInstance().addCustomer();
+        customerController.addCustomer();
         System.out.println(Message.CUSTOMER.getMessage());
         System.out.println(Command.BROWSE.getCommand());
         System.out.println(Command.RESERVE.getCommand());
@@ -198,9 +199,5 @@ public class ConsoleView {
             System.out.println(Message.WRONG_INPUT.getMessage());
             return -12345;
         }
-    }
-
-    private static class ConsoleViewHolder {
-        private static final ConsoleView CONSOLE_VIEW = new ConsoleView();
     }
 }
