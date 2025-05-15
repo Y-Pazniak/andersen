@@ -1,13 +1,19 @@
 package org.example.model;
 
-import java.io.Serial;
-import java.io.Serializable;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Customer extends User  implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1l;
-    public Customer() {
-        super();
-    }
+@Entity
+@NoArgsConstructor
+@Getter
+@ToString
+public class Customer extends User {
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Reservation> reservations = new ArrayList<>();
 }
