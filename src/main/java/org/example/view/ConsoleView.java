@@ -2,7 +2,6 @@ package org.example.view;
 
 import org.example.controller.CustomerController;
 import org.example.model.*;
-import org.example.repository.DataStorage;
 import org.example.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 
@@ -149,7 +148,7 @@ public class ConsoleView {
     }
 
     private void requestMyReservations(final BufferedReader bufferedReader) throws IOException {
-        List<Reservation> reservations = commandProcessor.viewMyReservations(customer.getId());
+        List<Reservation> reservations = commandProcessor.viewMyReservations(customer.getUserId());
         reservations.forEach(System.out::println);
 
         level = Level.CUSTOMER_MENU;

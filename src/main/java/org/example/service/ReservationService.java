@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -27,9 +27,12 @@ public class ReservationService {
         return reservationRepository.findAll().stream().toList();
     }
 
-    public List<Reservation> getReservationByUserId(final int userId) {
-        return reservationRepository.findAll().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
-
+    public List<Reservation> getReservationByUserId(final Long userId) {
+        return reservationRepository.findAll().stream()
+                .filter(n -> n.getCustomer() != null)
+                .filter(n -> Objects.equals(n.getCustomer().getUserId(), userId))
+                .filter(n -> n.getStatus()==ReservationStatus.UNAVAILABLE)
+                .toList();
     }
 
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {

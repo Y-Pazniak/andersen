@@ -108,7 +108,7 @@ public class CommandProcessor {
         }
     }
 
-    public List<Reservation> viewMyReservations(final int id) {
+    public List<Reservation> viewMyReservations(final Long id) {
         try {
             return customerController.getReservationsByUserId(id);
         } catch (EmptyListException e) {

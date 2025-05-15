@@ -13,16 +13,15 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @ToString
 
-public class Reservation implements Serializable {
+public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Serial
-    private static final long serialVersionUID = 1l;
-
     @Getter
-    private final Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Customer customer;
 
     @Getter
     @ManyToOne
@@ -33,8 +32,8 @@ public class Reservation implements Serializable {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    private final String startReservation;
-    private final String endReservation;
+    private String startReservation;
+    private String endReservation;
 
     public Reservation(final Customer customer, final Workspace workspace, final String startReservation, final String endReservation) {
         this.customer = customer;

@@ -2,22 +2,24 @@ package org.example.controller;
 
 import org.example.exception.EmptyListException;
 import org.example.model.*;
-import org.example.repository.DataStorage;
+import org.example.repository.CustomerRepository;
 import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CustomerController {
     private final WorkspaceService workspaceService;
     private final ReservationService reservationService;
-    private final DataStorage dataStorage;
+    private final CustomerRepository userRepository;
 
-    private CustomerController(WorkspaceService workspaceService, ReservationService reservationService) {
+    private CustomerController(WorkspaceService workspaceService, ReservationService reservationService, CustomerRepository userRepository) {
         this.workspaceService = workspaceService;
         this.reservationService = reservationService;
-        dataStorage = DataStorage.getInstance();
+        this.userRepository = userRepository;
     }
 
     public List<Workspace> getAvailableWorkspaces() {
@@ -29,18 +31,20 @@ public class CustomerController {
     }
 
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end){
+        userRepository.save(customer);
         reservationService.makeReservation(customer, idWorkspace, start, end);
     }
 
     public void addCustomer() {
-        dataStorage.addCustomer(new Customer());
+        userRepository.save(new Customer());
     }
 
-    public Customer getCustomer(final int id) {
-        return dataStorage.getCustomer(id);
+    public Customer getCustomer(final Long id) {
+        Optional<Customer> customer = userRepository.findById(id);
+        return customer.orElse(null);
     }
 
-    public List<Reservation> getReservationsByUserId(final int userId) {
+    public List<Reservation> getReservationsByUserId(final Long userId) {
         List<Reservation> reservations = reservationService.getReservationByUserId(userId);
         if (reservations.isEmpty()) {
             throw new EmptyListException("No reservations");
