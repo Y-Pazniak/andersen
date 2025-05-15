@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,8 +25,13 @@ public class Workspace implements Serializable {
 
     private int price;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
+
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Reservation> reservations = new ArrayList<>();
 
     public Workspace(Type type, int price, ReservationStatus status) {
         this.type = type;
@@ -36,10 +43,6 @@ public class Workspace implements Serializable {
         if (price > 0) {
             this.price = price;
         }
-    }
-
-    public void setStatus(final ReservationStatus status) {
-        this.status = status;
     }
 
     public boolean isAvailable() {

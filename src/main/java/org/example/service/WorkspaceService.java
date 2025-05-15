@@ -1,8 +1,8 @@
 package org.example.service;
 
 import org.example.model.*;
-import org.example.repository.DataStorage;
 import org.example.repository.WorkspaceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.Optional;
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
 
+    @Autowired
     private WorkspaceService(WorkspaceRepository workspaceRepository) {
         this.workspaceRepository = workspaceRepository;
     }

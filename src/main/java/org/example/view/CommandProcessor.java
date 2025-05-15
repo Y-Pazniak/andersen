@@ -4,7 +4,6 @@ import org.example.controller.AdminController;
 import org.example.controller.CustomerController;
 import org.example.exception.*;
 import org.example.model.*;
-import org.example.repository.DataStorageSerialization;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -118,7 +117,7 @@ public class CommandProcessor {
         }
     }
 
-    public void cancelReservation(final int id) {
+    public void cancelReservation(final Long id) {
         try {
             customerController.cancelReservation(id);
         } catch (InvalidWorkspaceReservation e) {

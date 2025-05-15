@@ -3,36 +3,41 @@ package org.example.service;
 import org.example.exception.InvalidWorkspaceReservation;
 import org.example.exception.WorkspaceUnavailableException;
 import org.example.model.*;
-import org.example.repository.DataStorage;
+import org.example.repository.ReservationRepository;
 import org.example.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class ReservationService {
-    private final DataStorage dataStorage;
+    private final ReservationRepository reservationRepository;
     private final WorkspaceRepository workspaceRepository;
 
     @Autowired
-    private ReservationService(WorkspaceRepository workspaceRepository) {
+    private ReservationService(WorkspaceRepository workspaceRepository, ReservationRepository reservationRepository) {
         this.workspaceRepository = workspaceRepository;
-        dataStorage = DataStorage.getInstance();
+        this.reservationRepository = reservationRepository;
     }
 
     public List<Reservation> getAllReservations() {
-        return dataStorage.getAllReservations().values().stream().toList();
+        return reservationRepository.findAll().stream().toList();
     }
 
     public List<Reservation> getReservationByUserId(final int userId) {
-        return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
+        return reservationRepository.findAll().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
+
     }
 
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {
-        Workspace workspace = workspaceRepository.getReferenceById(idWorkspace);
-        if (workspace.isAvailable()) {
+        Optional<Workspace> workspaceOptional = workspaceRepository.findById(idWorkspace);
+        if (workspaceOptional.isPresent()) {
+            Workspace workspace = workspaceOptional.get();
             Reservation reservation = new Reservation(customer, workspace, start, end);
-            dataStorage.addReservation(reservation);
+            reservationRepository.save(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
             System.out.println(Message.SUCCESSFUL.getMessage());
         } else {
@@ -40,15 +45,11 @@ public class ReservationService {
         }
     }
 
-    public void cancelReservation(final int idReservation) {
-        Reservation reservation = dataStorage.getReservation(idReservation);
-        if (reservation != null) {
-            reservation.cancel(idReservation);
-            reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
-            System.out.println(Message.SUCCESSFUL.getMessage());
-        } else {
-            throw new InvalidWorkspaceReservation("You have no reservation for this id: " + idReservation);
-        }
+    public void cancelReservation(final Long idReservation) {
+        Reservation reservation = reservationRepository.getReferenceById(idReservation);
+        reservation.cancel(idReservation);
+        reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
+        System.out.println(Message.SUCCESSFUL.getMessage());
     }
 
 }

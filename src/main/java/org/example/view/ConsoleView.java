@@ -3,7 +3,6 @@ package org.example.view;
 import org.example.controller.CustomerController;
 import org.example.model.*;
 import org.example.repository.DataStorage;
-import org.example.repository.DataStorageSerialization;
 import org.example.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +35,12 @@ public class ConsoleView {
     }
 
     public void start() {
-        DataStorageSerialization.getInstance().load();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (true) {
                 showMenu(reader);
 
                 int commandId = readCommand(reader);
                 if (commandId == 0) {
-                    DataStorageSerialization.getInstance().save(DataStorage.getInstance());
                     break;
                 }
 
@@ -163,7 +160,7 @@ public class ConsoleView {
         System.out.println(Message.ID_WORKSPACE_REQUEST.getMessage());
         String readInpupt = bufferedReader.readLine().trim();
         if (isDigit(readInpupt)) {
-            commandProcessor.cancelReservation(Integer.parseInt(readInpupt));
+            commandProcessor.cancelReservation((long) Integer.parseInt(readInpupt));
         }
 
         level = Level.CUSTOMER_MENU;
