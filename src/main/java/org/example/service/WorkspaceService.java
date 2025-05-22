@@ -6,6 +6,7 @@ import org.example.repository.DataStorage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class WorkspaceService {
     private final DataStorage dataStorage;
@@ -38,11 +39,18 @@ public class WorkspaceService {
     }
 
     public List<Workspace> getAvailableWorkspaces() {
+        //here we use stream and lambda to find workspaces which are available for booking
         return dataStorage.getAllWorkspaces().values().stream().filter(n -> n.isAvailable()).toList();
     }
 
     public List<Workspace> getAllWorkspaces() {
+        //here we use stream to convert values from a map to a list
         return dataStorage.getAllWorkspaces().values().stream().toList();
+    }
+
+    public Optional<Workspace> getWorkspaceCheaperThan(final int price) {
+        //here we use Stream and Optional to get a workspace
+        return getAllWorkspaces().stream().filter(n -> n.getPrice() < price).findFirst();
     }
 
     public static WorkspaceService getInstance() {
