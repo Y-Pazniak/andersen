@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.exception.EmptyListException;
+import org.example.exception.InvalidPriceException;
 import org.example.model.*;
 import org.example.repository.CustomerRepository;
 import org.example.service.ReservationService;
@@ -29,10 +30,8 @@ public class CustomerController {
         }
         return workspaceService.getAvailableWorkspaces();
     }
-
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end){
         userRepository.save(customer);
-        reservationService.makeReservation(customer, idWorkspace, start, end);
     }
 
     public void addCustomer() {
@@ -54,5 +53,12 @@ public class CustomerController {
 
     public void cancelReservation(final Long idReservation) {
         reservationService.cancelReservation(idReservation);
+        dataStorageSerialization.save(dataStorage);
+    }
+
+    public Workspace getWorkspaceCheaperThan(final int price) {
+        //here we use Optional to check it and return the value
+        Optional<Workspace> workspace = workspaceService.getWorkspaceCheaperThan(price);
+        return workspace.orElseThrow(() -> new InvalidPriceException(price + " - no such price for rooms"));
     }
 }
