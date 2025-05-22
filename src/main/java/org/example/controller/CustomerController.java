@@ -53,11 +53,9 @@ public class CustomerController {
 
     public void cancelReservation(final Long idReservation) {
         reservationService.cancelReservation(idReservation);
-        dataStorageSerialization.save(dataStorage);
     }
 
     public Workspace getWorkspaceCheaperThan(final int price) {
-        //here we use Optional to check it and return the value
         Optional<Workspace> workspace = workspaceService.getWorkspaceCheaperThan(price);
         return workspace.orElseThrow(() -> new InvalidPriceException(price + " - no such price for rooms"));
     }
