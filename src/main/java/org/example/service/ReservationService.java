@@ -3,36 +3,44 @@ package org.example.service;
 import org.example.exception.InvalidWorkspaceReservation;
 import org.example.exception.WorkspaceUnavailableException;
 import org.example.model.*;
-import org.example.repository.DataStorage;
+import org.example.repository.ReservationRepository;
+import org.example.repository.WorkspaceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+@Service
 public class ReservationService {
-    private final DataStorage dataStorage;
+    private final ReservationRepository reservationRepository;
+    private final WorkspaceRepository workspaceRepository;
 
-    private ReservationService() {
-        dataStorage = DataStorage.getInstance();
-    }
-
-    public static ReservationService getInstance() {
-        return ReservationServiceHolder.RESERVATION_SERVICE;
+    @Autowired
+    private ReservationService(WorkspaceRepository workspaceRepository, ReservationRepository reservationRepository) {
+        this.workspaceRepository = workspaceRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     public List<Reservation> getAllReservations() {
-        //here we use streams to convert values from a map to a list and to get reservations were made
-        return dataStorage.getAllReservations().values().stream().toList();
+        return reservationRepository.findAll().stream().toList();
     }
 
-    public List<Reservation> getReservationByUserId(final int userId) {
-        //here we use streams to get reservations according to user's ID and use the lambda to check the status and ID
-        return dataStorage.getAllReservations().values().stream().filter(n -> n.getCustomer().getId() == userId && n.getStatus() == ReservationStatus.UNAVAILABLE).toList();
+    public List<Reservation> getReservationByUserId(final Long userId) {
+        return reservationRepository.findAll().stream()
+                .filter(n -> n.getCustomer() != null)
+                .filter(n -> Objects.equals(n.getCustomer().getUserId(), userId))
+                .filter(n -> n.getStatus()==ReservationStatus.UNAVAILABLE)
+                .toList();
     }
 
-    public void makeReservation(final Customer customer, final int idWorkspace, final String start, final String end) {
-        Workspace workspace = dataStorage.getWorkspace(idWorkspace);
-        if (workspace != null && workspace.isAvailable()) {
+    public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {
+        Optional<Workspace> workspaceOptional = workspaceRepository.findById(idWorkspace);
+        if (workspaceOptional.isPresent()) {
+            Workspace workspace = workspaceOptional.get();
             Reservation reservation = new Reservation(customer, workspace, start, end);
-            dataStorage.addReservation(reservation);
+            reservationRepository.save(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
             System.out.println(Message.SUCCESSFUL.getMessage());
         } else {
@@ -40,18 +48,11 @@ public class ReservationService {
         }
     }
 
-    public void cancelReservation(final int idReservation) {
-        Reservation reservation = dataStorage.getReservation(idReservation);
-        if (reservation != null) {
-            reservation.cancel(idReservation);
-            reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
-            System.out.println(Message.SUCCESSFUL.getMessage());
-        } else {
-            throw new InvalidWorkspaceReservation("You have no reservation for this id: " + idReservation);
-        }
+    public void cancelReservation(final Long idReservation) {
+        Reservation reservation = reservationRepository.getReferenceById(idReservation);
+        reservation.cancel(idReservation);
+        reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
+        System.out.println(Message.SUCCESSFUL.getMessage());
     }
 
-    private static class ReservationServiceHolder {
-        private static final ReservationService RESERVATION_SERVICE = new ReservationService();
-    }
 }
