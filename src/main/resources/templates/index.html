@@ -8,6 +8,9 @@
 <h1>Coworking booking application</h1>
 <p>Choose your role</p>
 
-<a th:href="@{/login}">Enter</a>
+<form th:action="@{/admin/dashboard}" method="get">
+    <button type="submit">Admin</button>
+</form>
+
 </body>
 </html>

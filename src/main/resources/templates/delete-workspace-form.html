@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete worlspace</title>
+</head>
+<body>
+<h1>Delete a workspace</h1>
+<form th:action="@{/admin/delete-workspace}" method="post">
+
+    <p th:each="room : ${availableRooms}"
+       th:text="${room}">Room</p>
+
+    <label for="id">Workspace ID</label>
+    <input type="number" name="id" id="id">
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

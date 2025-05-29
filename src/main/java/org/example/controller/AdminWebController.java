@@ -1,6 +1,9 @@
 package org.example.controller;
 
 import org.example.exception.InvalidCommandException;
+import org.example.model.Command;
+import org.example.model.Reservation;
+import org.example.model.Type;
 import org.example.model.Workspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,17 +31,37 @@ public class AdminWebController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        List<Workspace> workspaces = workspaceService.getAllWorkspaces();
-        model.addAttribute("workspaces", workspaces);
-        return "admin_dashboard";
+        return "admin-dashboard";
+    }
+
+    @GetMapping("/add-workspace-form")
+    public String addWorkspaceForm(Model model) {
+        model.addAttribute("availableRoomTypes", Type.values());
+        return "add-workspace-form";
+    }
+
+    @GetMapping("/delete-workspace-form")
+    public String deleteWorkspaceForm(Model model) {
+        model.addAttribute("availableRooms", workspaceService.getAllWorkspaces());
+        return "delete-workspace-form";
+    }
+
+    @GetMapping("/view-reservations")
+    public String viewReservations(Model model) {
+        List<Reservation> reservations = reservationService.getAllReservations();
+        model.addAttribute("reservations", reservations);
+        return "view-reservations";
     }
 
     @PostMapping("/add-workspace")
-    public String addWorkspace(@RequestParam String type, @RequestParam int price) {
-        workspaceService.addWorkspace(org.example.model.Type.valueOf(type.toUpperCase()), price);
+    public String addWorkspace(@RequestParam String type, int price) {
+        workspaceService.addWorkspace(Type.valueOf(type), price);
         return "redirect:/admin/dashboard";
     }
 
-
-
+    @PostMapping("/delete-workspace")
+    public String deleteWorkspace(@RequestParam int id) {
+        workspaceService.removeWorkspace(workspaceService.getAllWorkspaces().stream().filter(w -> w.getId() == id).findFirst().get());
+        return "redirect:/admin/dashboard";
+    }
 }
