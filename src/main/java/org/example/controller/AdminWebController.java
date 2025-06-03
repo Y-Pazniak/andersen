@@ -1,13 +1,9 @@
 package org.example.controller;
 
-import org.example.exception.InvalidCommandException;
-import org.example.model.Command;
 import org.example.model.Reservation;
 import org.example.model.Type;
-import org.example.model.Workspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +46,7 @@ public class AdminWebController {
     public String viewReservations(Model model) {
         List<Reservation> reservations = reservationService.getAllReservations();
         model.addAttribute("reservations", reservations);
-        return "view-reservations";
+        return "view-bookings";
     }
 
     @PostMapping("/add-workspace")

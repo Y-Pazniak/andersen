@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse available workspaces</title>
+</head>
+<body>
+<p th:each="workspace : ${workspaces}"
+   th:text="${workspace}">workspace</p>
+</body>
+</html>

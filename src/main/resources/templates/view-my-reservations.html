@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View my reservations</title>
+</head>
+<body>
+<p th:each="reservation : ${reservations}"
+   th:text="${reservation}">Reservation</p>
+</body>
+</html>

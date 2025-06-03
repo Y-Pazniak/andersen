@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Make reservation form</title>
+</head>
+<body>
+
+<form th:action="@{/customer/make-reservation}" method="post">
+    <label for="userId">Your ID</label>
+    <input type="number" name="userId" id="userId">
+
+    <label for="workspaceId">Workspace ID</label>
+    <input type="number" name="workspaceId" id="workspaceId">
+
+    <label for="from">From when</label>
+    <input type="text" name="from" id="from">
+
+    <label for="till">Till</label>
+    <input type="text" name="till" id="till">
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

@@ -31,28 +31,31 @@ public class ReservationService {
         return reservationRepository.findAll().stream()
                 .filter(n -> n.getCustomer() != null)
                 .filter(n -> Objects.equals(n.getCustomer().getUserId(), userId))
-                .filter(n -> n.getStatus()==ReservationStatus.UNAVAILABLE)
+                .filter(n -> n.getStatus() == ReservationStatus.UNAVAILABLE)
                 .toList();
     }
 
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end) {
         Optional<Workspace> workspaceOptional = workspaceRepository.findById(idWorkspace);
-        if (workspaceOptional.isPresent()) {
+        System.out.println("makeReservation");
+        if (workspaceOptional.isPresent() && workspaceOptional.get().getStatus() == ReservationStatus.AVAILABLE) {
             Workspace workspace = workspaceOptional.get();
             Reservation reservation = new Reservation(customer, workspace, start, end);
             reservationRepository.save(reservation);
             workspace.setStatus(ReservationStatus.UNAVAILABLE);
+            workspaceRepository.save(workspace);
             System.out.println(Message.SUCCESSFUL.getMessage());
         } else {
             throw new WorkspaceUnavailableException("Workspace is not available");
         }
     }
 
-    public void cancelReservation(final Long idReservation) {
-        Reservation reservation = reservationRepository.getReferenceById(idReservation);
-        reservation.cancel(idReservation);
-        reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
-        System.out.println(Message.SUCCESSFUL.getMessage());
+    public void cancelReservation(final Long userId, final Long reservationId) {
+        Reservation reservation = reservationRepository.getReferenceById(reservationId);
+        if (Objects.equals(reservation.getCustomer().getUserId(), userId)) {
+            reservation.cancel(reservationId);
+            reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
+            reservationRepository.save(reservation);
+        }
     }
-
 }

@@ -48,4 +48,16 @@ public class Reservation {
             this.status = ReservationStatus.AVAILABLE;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", customerId=" + (customer != null ? customer.getUserId() : "null") +
+                ", workspaceId=" + (workspace != null ? workspace.getId() : "null") +
+                ", status=" + status +
+                ", startReservation='" + startReservation + '\'' +
+                ", endReservation='" + endReservation + '\'' +
+                '}';
+    }
 }

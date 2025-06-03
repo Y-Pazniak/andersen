@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View my reservations</title>
+</head>
+<body>
+<h1>Cancel my reservations</h1>
+<form th:action="@{/customer/cancel-my-reservation}" method="post">
+    <label for="userId">Your ID</label>
+    <input type="number" name="userId" id="userId">
+
+    <label for="reservationId">Reservation ID</label>
+    <input type="number" name="reservationId" id="reservationId">
+
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

@@ -30,6 +30,7 @@ public class CustomerController {
         }
         return workspaceService.getAvailableWorkspaces();
     }
+
     public void makeReservation(final Customer customer, final Long idWorkspace, final String start, final String end){
         userRepository.save(customer);
     }
@@ -52,7 +53,7 @@ public class CustomerController {
     }
 
     public void cancelReservation(final Long idReservation) {
-        reservationService.cancelReservation(idReservation);
+        //reservationService.cancelReservation(idReservation);
     }
 
     public Workspace getWorkspaceCheaperThan(final int price) {
