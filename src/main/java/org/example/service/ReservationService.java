@@ -54,5 +54,4 @@ public class ReservationService {
         reservation.getWorkspace().setStatus(ReservationStatus.AVAILABLE);
         System.out.println(Message.SUCCESSFUL.getMessage());
     }
-
 }
