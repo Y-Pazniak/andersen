@@ -4,6 +4,7 @@ import org.example.model.Role;
 import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -29,25 +30,35 @@ public class LoginWebController {
         return "login-form";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        try {
-            User user = (User) userService.loadUserByUsername(username);
-            System.out.println("user found: "  + user.getUsername());
-            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-                System.out.println("user is not null and password do matches");
-                if (user.getRole().equals(Role.ADMIN)) {
-                    System.out.println("user is admin");
-                    return "/admin-dashboard";
-                } else {
-                    return "/customer-dashboard";
-                }
-            }
-        } catch (UsernameNotFoundException e) {
-            System.out.println("user not found: " + username);
-            e.printStackTrace();
+    @GetMapping("/default")
+    public String redirectAfterLogin(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if (user.getRole() == Role.ADMIN) {
+            return "redirect:/admin/dashboard";
+        } else {
+            return "redirect:/customer/dashboard";
         }
-
-        return "/login-form";
     }
+
+//    @PostMapping("/login")
+//    public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
+//        try {
+//            User user = (User) userService.loadUserByUsername(username);
+//            System.out.println("user found: "  + user.getUsername());
+//            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+//                System.out.println("user is not null and password do matches");
+//                if (user.getRole().equals(Role.ADMIN)) {
+//                    System.out.println("user is admin");
+//                    return "/admin-dashboard";
+//                } else {
+//                    return "/customer-dashboard";
+//                }
+//            }
+//        } catch (UsernameNotFoundException e) {
+//            System.out.println("user not found: " + username);
+//            e.printStackTrace();
+//        }
+//
+//        return "/login-form";
+//    }
 }
