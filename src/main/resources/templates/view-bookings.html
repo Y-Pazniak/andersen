@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View reservations</title>
+</head>
+<body>
+<h1>Current reservations</h1>
+<p th:each="reservation : ${reservations}"
+   th:text="${reservation}">Reservation</p>
+
+<form th:action="@{/admin/dashboard}">
+    <button type="submit">Return</button>
+</form>
+</body>
+</html>

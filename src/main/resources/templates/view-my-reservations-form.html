@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View my reservations</title>
+</head>
+<body>
+<h1>View my reservations</h1>
+<form th:action="@{/customer/view-my-reservations}" method="get">
+    <label for="userId">Your ID</label>
+    <input type="number" name="userId" id="userId">
+
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

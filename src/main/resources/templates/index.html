@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+<h1>Coworking booking application</h1>
+<p>Choose your role</p>
+
+<form th:action="@{/admin/dashboard}" method="get">
+    <button type="submit">Admin</button>
+</form>
+<form th:action="@{/customer/dashboard}" method="get">
+    <button type="submit">Customer</button>
+</form>
+
+</body>
+</html>

@@ -10,7 +10,6 @@ import org.example.model.Type;
 import org.example.model.Workspace;
 import org.example.service.ReservationService;
 import org.example.service.WorkspaceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
