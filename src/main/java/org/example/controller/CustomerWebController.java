@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.exception.EmptyListException;
 import org.example.model.Customer;
 import org.example.model.Reservation;
 import org.example.model.Workspace;

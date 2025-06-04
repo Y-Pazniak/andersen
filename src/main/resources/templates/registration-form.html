@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+<form th:action="@{/security/registration}" method="post">
+    <h1>Registration</h1>
+    <label for="username">Your username</label>
+    <input type="text" name="username" id="username">
+
+    <label for="password">Your password</label>
+    <input type="text" name="password" id="password">
+
+    <label for="role">Select role:</label>
+    <select name="role" id="role">
+        <option th:each="role : ${roles}"
+                th:value="${role}"
+                th:text="${role}">role
+        </option>
+    </select>
+    <br>
+
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

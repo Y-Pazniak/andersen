@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<form th:action="@{/security/login}" method="post">
+  <h1>Login</h1>
+  <label for="username">Your username</label>
+  <input type="text" name="username" id="username">
+
+  <label for="password">Your password</label>
+  <input type="password" name="password" id="password">
+
+  <button type="submit">Submit</button>
+
+  <p><a th:href="@{/security/registration-form}">Registration</a></p>
+</form>
+</body>
+</html>
