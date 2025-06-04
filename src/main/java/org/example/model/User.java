@@ -1,15 +1,15 @@
 package org.example.model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+
+@Getter
+@MappedSuperclass
 public abstract class User {
-    private static int idCounter = 0;
-    private final int id;
-
-    public User(){
-        id = ++idCounter;
-    }
-
-    public int getId() {
-        return id;
-    }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 }

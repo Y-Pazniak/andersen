@@ -1,38 +1,42 @@
 package org.example.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Workspace  implements Serializable {
+@Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+public class Workspace implements Serializable {
     @Serial
     private static final long serialVersionUID = 1l;
-    private final int id;
-    private static int idCounter = 0;
-    private final Type type;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Type type;
+
     private int price;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Reservation> reservations = new ArrayList<>();
+
     public Workspace(Type type, int price, ReservationStatus status) {
-        this.id = ++idCounter;
         this.type = type;
         this.price = price;
         this.status = status;
-    }
-
-    public ReservationStatus getStatus() {
-        return status;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void setPrice(final int price) {
@@ -41,21 +45,7 @@ public class Workspace  implements Serializable {
         }
     }
 
-    public void setStatus(final ReservationStatus status) {
-        this.status = status;
-    }
-
-    public boolean isAvailable(){
+    public boolean isAvailable() {
         return this.status == ReservationStatus.AVAILABLE;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Workspace #%d [Type: %s, Price: %d, Status: %s, Available: %s]",
-                id,
-                type,
-                price,
-                status,
-                isAvailable() ? "Yes" : "No");
     }
 }
