@@ -8,15 +8,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Workspace implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1l;
-
+@Entity
+public class Workspace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +23,6 @@ public class Workspace implements Serializable {
 
     private int price;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
